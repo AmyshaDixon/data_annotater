@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2> Data Requiring Annotation </h2>
+
+{% if unannotated_data %}
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th> Merchant </th>
+                <th> SKU </th>
+                <th> Country </th>
+                <th> Retailer </th>
+                <th> Segment </th>
+                <th> Actions </th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for item in unannotated_data %}
+            <tr>
+                <td> {{item.merchant}} </td>
+                <td> {{item.sku}} </td>
+                <td> {{item.country}} </td>
+                <td> {{item.retailer | default:"🦭"}} </td> <!-- TO DO: adding emojis for fun, remove in prod-->
+                <td> {{item.get_segment_display | default:"🪨"}} </td>
+                <td>
+                    <a href="{% url 'edit_annotation' item.pk %}" class="btn btn-sm btn-primary"> Edit </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+{% else %}
+    <p class="mt-3"> There is currently no data requiring annotation </p>
+{% endif %}
+
+{% if annotated_data %}
+    <h3 class="mt-4"> Completed Annotations </h3>
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th> Merchant </th>
+                <th> SKU </th>
+                <th> Country </th>
+                <th> Retailer </th>
+                <th> Segment </th>
+                <th> Actions </th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for item in annotated_data %}
+            <tr>
+                <td> {{item.merchant}} </td>
+                <td> {{item.sku}} </td>
+                <td> {{item.country}} </td>
+                <td> {{item.retailer}} </td>
+                <td> {{item.get_segment_display}} </td>
+                <td>
+                    <a href="{% url 'edit_annotation' item.pk %}" class="btn btn-sm btn-danger"> Edit again </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+<!-- TO DO: Add a third category of "In Progress" or similar to distinguish from "Data Requiring Annotation" in prod -->
+{% endblock %}
